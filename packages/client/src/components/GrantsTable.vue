@@ -5,19 +5,35 @@
         <SavedSearchPanel :isDisabled="loading" />
       </div>
       <div class="ml-1">
-        <SearchPanel :isDisabled="loading" ref="searchPanel" :search-id="Number(editingSearchId)" @filters-applied="retrieveFilteredGrants" />
+        <SearchPanel
+          :isDisabled="loading"
+          ref="searchPanel"
+          :search-id="Number(editingSearchId)"
+          @filters-applied="retrieveFilteredGrants"
+        />
       </div>
     </b-row>
-    <b-row  class="grants-table-title-control">
-      <b-col v-if="showSearchControls" >
-        <SearchFilter :isDisabled="loading" :filterKeys="searchFilters" @filter-removed="onFilterRemoved" />
+    <b-row class="grants-table-title-control">
+      <b-col v-if="showSearchControls">
+        <SearchFilter
+          :isDisabled="loading"
+          :filterKeys="searchFilters"
+          @filter-removed="onFilterRemoved"
+        />
       </b-col>
       <b-col align-self="end" v-if="!showSearchControls">
         <h2 class="mb-0">{{ searchTitle }}</h2>
       </b-col>
       <b-col class="d-flex justify-content-end">
-        <b-button @click="exportCSV" :disabled="loading" variant="outline-primary" size="sm">
-          <b-icon icon="download" class="mr-2" aria-hidden="true" />Export to CSV</b-button>
+        <b-button
+          @click="exportCSV"
+          :disabled="loading"
+          variant="outline-primary"
+          size="sm"
+        >
+          <b-icon icon="download" class="mr-2" aria-hidden="true" />Export to
+          CSV</b-button
+        >
       </b-col>
     </b-row>
     <b-row align-v="center">
@@ -31,7 +47,7 @@
           stacked="sm"
           :busy="loading"
           :items="formattedGrants"
-          :fields="fields.filter(field => !field.hideGrantItem)"
+          :fields="fields.filter((field) => !field.hideGrantItem)"
           show-empty
           emptyText="No matches found"
           no-local-sorting
@@ -39,31 +55,37 @@
           :sort-desc.sync="orderDesc"
           selectable
           select-mode="single"
-          :tbody-tr-attr="{'data-dd-action-name': 'grant search result'}"
+          :tbody-tr-attr="{ 'data-dd-action-name': 'grant search result' }"
           @row-selected="onRowSelected"
           @row-clicked="onRowClicked"
           @sort-changed="currentPage = 1"
         >
           <template #cell(award_ceiling)="row">
-            <p> {{ formatMoney(row.item.award_ceiling) }}</p>
+            <p>{{ formatMoney(row.item.award_ceiling) }}</p>
           </template>
           <template #table-busy>
-            <div class="text-center text-info my-2" style="height: 1200px;">
+            <div class="text-center text-info my-2" style="height: 1200px">
               <b-spinner class="align-middle"></b-spinner>
               <strong> Loading...</strong>
             </div>
           </template>
           <template #empty="scope">
-            &emsp;
-            &emsp;
+            &emsp; &emsp;
             <div class="text-center">
-              <p class="empty-text"><strong>{{ scope.emptyText }}</strong></p>
+              <p class="empty-text">
+                <strong>{{ scope.emptyText }}</strong>
+              </p>
               <div v-if="showSearchControls">
-              <p class="empty-text">Tip: Broaden your search or adjust your keywords for more results</p>
-              &nbsp;
-              <p><a @click="initEditSearch(searchId);" class="link">
-                  Edit Search Criteria
-                </a></p>
+                <p class="empty-text">
+                  Tip: Broaden your search or adjust your keywords for more
+                  results
+                </p>
+                &nbsp;
+                <p>
+                  <a @click="initEditSearch(searchId)" class="link">
+                    Edit Search Criteria
+                  </a>
+                </p>
               </div>
             </div>
           </template>
@@ -90,31 +112,42 @@
             aria-controls="grants-table"
           />
         </template>
-        <div class="my-1 rounded py-1 px-2 page-item">{{ totalRows }} total grant{{ totalRows == 1 ? '' : 's' }}</div>
+        <div class="my-1 rounded py-1 px-2 page-item">
+          {{ totalRows }} total grant{{ totalRows == 1 ? "" : "s" }}
+        </div>
       </b-col>
     </b-row>
-    <GrantDetailsLegacy v-if="!newGrantsDetailPageEnabled" :selected-grant.sync="selectedGrant" />
+    <GrantDetailsLegacy
+      v-if="!newGrantsDetailPageEnabled"
+      :selected-grant.sync="selectedGrant"
+    />
   </section>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import { newTerminologyEnabled, newGrantsDetailPageEnabled } from '@/helpers/featureFlags';
-import { datadogRum } from '@datadog/browser-rum';
-import { titleize } from '../helpers/form-helpers';
-import GrantDetailsLegacy from './Modals/GrantDetailsLegacy.vue';
-import SearchPanel from './Modals/SearchPanel.vue';
-import SavedSearchPanel from './Modals/SavedSearchPanel.vue';
-import SearchFilter from './SearchFilter.vue';
+import { mapActions, mapGetters } from "vuex";
+import {
+  newTerminologyEnabled,
+  newGrantsDetailPageEnabled,
+} from "@/helpers/featureFlags";
+import { datadogRum } from "@datadog/browser-rum";
+import { titleize } from "../helpers/form-helpers";
+import GrantDetailsLegacy from "./Modals/GrantDetailsLegacy.vue";
+import SearchPanel from "./Modals/SearchPanel.vue";
+import SavedSearchPanel from "./Modals/SavedSearchPanel.vue";
+import SearchFilter from "./SearchFilter.vue";
 
 const DEFAULT_CURRENT_PAGE = 1;
-const DEFAULT_ORDER_BY = 'rank';
+const DEFAULT_ORDER_BY = "rank";
 const DEFAULT_ORDER_DESC = false;
 const DEFAULT_SEARCH_ID = null;
 
 export default {
   components: {
-    GrantDetailsLegacy, SearchPanel, SavedSearchPanel, SearchFilter,
+    GrantDetailsLegacy,
+    SearchPanel,
+    SavedSearchPanel,
+    SearchFilter,
   },
   props: {
     showInterested: Boolean,
@@ -127,7 +160,7 @@ export default {
     },
     searchTitle: {
       type: String,
-      default: '',
+      default: "",
     },
   },
   data() {
@@ -137,37 +170,37 @@ export default {
       loading: false,
       fields: [
         {
-          key: 'title',
+          key: "title",
         },
         {
-          key: 'viewed_by',
+          key: "viewed_by",
         },
         {
-          key: 'interested_agencies',
-          label: `Interested ${newTerminologyEnabled() ? 'Teams' : 'Agencies'}`,
+          key: "interested_agencies",
+          label: `Interested ${newTerminologyEnabled() ? "Teams" : "Agencies"}`,
         },
         {
           // opportunity_status
-          key: 'status',
+          key: "status",
           hideGrantItem: this.hideGrantItems,
         },
         {
-          key: 'opportunity_category',
+          key: "opportunity_category",
           hideGrantItem: this.hideGrantItems,
         },
         {
-          key: 'cost_sharing',
+          key: "cost_sharing",
         },
         {
-          key: 'award_ceiling',
+          key: "award_ceiling",
           sortable: true,
         },
         {
-          key: 'open_date',
+          key: "open_date",
           sortable: true,
         },
         {
-          key: 'close_date',
+          key: "close_date",
           sortable: true,
         },
       ],
@@ -178,16 +211,14 @@ export default {
     };
   },
   async mounted() {
-    document.addEventListener('keyup', this.changeSelectedGrantIndex);
+    document.addEventListener("keyup", this.changeSelectedGrantIndex);
     this.clearSelectedSearch();
 
     // Watch route query updates and reflect them in the component
     // (This happens with browser back/forward through history)
-    this.$watch(
-      () => this.$route.query,
-      this.extractStateFromRoute,
-      { deep: true },
-    );
+    this.$watch(() => this.$route.query, this.extractStateFromRoute, {
+      deep: true,
+    });
 
     // Retrieve the initial grants list for the table
     if (this.$route.query.search) {
@@ -214,41 +245,45 @@ export default {
         this.pushRouteUpdate(routeQuery);
         this.retrieveFilteredGrants();
       },
-      { deep: true, immediate: false },
+      { deep: true, immediate: false }
     );
 
     // Watch selected search and reset orderBy and orderDesc
     // (This must be done after these values are set on initial page load
     // to prevent them being overwritten)
-    this.$watch(
-      'selectedSearchId',
-      () => {
-        this.currentPage = 1;
-        const filterKeys = this.activeFilters.map((f) => f.key);
-        if (this.searchId !== null && (filterKeys.includes('includeKeywords') || filterKeys.includes('excludeKeywords'))) {
+    this.$watch("selectedSearchId", () => {
+      this.currentPage = 1;
+      const filterKeys = this.activeFilters.map((f) => f.key);
+      if (
+        this.searchId !== null &&
+        (filterKeys.includes("includeKeywords") ||
+          filterKeys.includes("excludeKeywords"))
+      ) {
         // only if include/exclude keywords are selected
-          this.orderBy = 'rank';
-          this.orderDesc = false;
-        } else {
-          this.orderBy = 'open_date';
-          this.orderDesc = true;
-        }
-      },
-    );
+        this.orderBy = "rank";
+        this.orderDesc = false;
+      } else {
+        this.orderBy = "open_date";
+        this.orderDesc = true;
+      }
+    });
   },
   computed: {
     ...mapGetters({
-      grants: 'grants/grants',
-      grantsPagination: 'grants/grantsPagination',
-      agency: 'users/agency',
-      selectedAgency: 'users/selectedAgency',
-      activeFilters: 'grants/activeFilters',
-      selectedSearchId: 'grants/selectedSearchId',
-      editingSearchId: 'grants/editingSearchId',
-      savedSearches: 'grants/savedSearches',
+      grants: "grants/grants",
+      grantsPagination: "grants/grantsPagination",
+      agency: "users/agency",
+      selectedAgency: "users/selectedAgency",
+      activeFilters: "grants/activeFilters",
+      selectedSearchId: "grants/selectedSearchId",
+      editingSearchId: "grants/editingSearchId",
+      savedSearches: "grants/savedSearches",
     }),
     searchId() {
-      return (this.selectedSearchId === null || Number.isNaN(this.selectedSearchId)) ? null : Number(this.selectedSearchId);
+      return this.selectedSearchId === null ||
+        Number.isNaN(this.selectedSearchId)
+        ? null
+        : Number(this.selectedSearchId);
     },
     routeQuery() {
       const query = {
@@ -279,11 +314,13 @@ export default {
     },
     formattedGrants() {
       const DAYS_TO_MILLISECS = 24 * 60 * 60 * 1000;
-      const warningThreshold = (this.agency.warning_threshold || 30) * DAYS_TO_MILLISECS;
-      const dangerThreshold = (this.agency.danger_threshold || 15) * DAYS_TO_MILLISECS;
+      const warningThreshold =
+        (this.agency.warning_threshold || 30) * DAYS_TO_MILLISECS;
+      const dangerThreshold =
+        (this.agency.danger_threshold || 15) * DAYS_TO_MILLISECS;
       const now = new Date();
       const generateTitle = (t) => {
-        const txt = document.createElement('textarea');
+        const txt = document.createElement("textarea");
         txt.innerHTML = t;
         return txt.value;
       };
@@ -292,21 +329,25 @@ export default {
         title: generateTitle(grant.title),
         interested_agencies: grant.interested_agencies
           .map((v) => v.agency_abbreviation)
-          .join(', '),
+          .join(", "),
         viewed_by: grant.viewed_by_agencies
           .map((v) => v.agency_abbreviation)
-          .join(', '),
+          .join(", "),
         status: grant.opportunity_status,
         award_ceiling: grant.award_ceiling,
-        open_date: new Date(grant.open_date).toLocaleDateString('en-US', { timeZone: 'UTC' }),
-        close_date: new Date(grant.close_date).toLocaleDateString('en-US', { timeZone: 'UTC' }),
+        open_date: new Date(grant.open_date).toLocaleDateString("en-US", {
+          timeZone: "UTC",
+        }),
+        close_date: new Date(grant.close_date).toLocaleDateString("en-US", {
+          timeZone: "UTC",
+        }),
         _cellVariants: (() => {
           const diff = new Date(grant.close_date) - now;
           if (diff <= dangerThreshold) {
-            return { close_date: 'danger' };
+            return { close_date: "danger" };
           }
           if (diff <= warningThreshold) {
-            return { close_date: 'warning' };
+            return { close_date: "warning" };
           }
           return {};
         })(),
@@ -334,15 +375,15 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchGrants: 'grants/fetchGrantsNext',
-      navigateToExportCSV: 'grants/exportCSV',
-      clearSelectedSearch: 'grants/clearSelectedSearch',
-      changeSelectedSearchId: 'grants/changeSelectedSearchId',
-      changeEditingSearchId: 'grants/changeEditingSearchId',
-      initEditSearch: 'grants/initEditSearch',
-      applyFilters: 'grants/applyFilters',
-      initViewResults: 'grants/initViewResults',
-      fetchSavedSearches: 'grants/fetchSavedSearches',
+      fetchGrants: "grants/fetchGrantsNext",
+      navigateToExportCSV: "grants/exportCSV",
+      clearSelectedSearch: "grants/clearSelectedSearch",
+      changeSelectedSearchId: "grants/changeSelectedSearchId",
+      changeEditingSearchId: "grants/changeEditingSearchId",
+      initEditSearch: "grants/initEditSearch",
+      applyFilters: "grants/applyFilters",
+      initViewResults: "grants/initViewResults",
+      fetchSavedSearches: "grants/fetchSavedSearches",
     }),
     titleize,
     extractStateFromRoute() {
@@ -351,9 +392,12 @@ export default {
       this.orderDesc = Boolean(this.$route.query.desc);
 
       // Manage search state
-      const routeSearchId = Number(this.$route.query.search) || DEFAULT_SEARCH_ID;
+      const routeSearchId =
+        Number(this.$route.query.search) || DEFAULT_SEARCH_ID;
       if (routeSearchId && this.savedSearches) {
-        const searchData = this.savedSearches.data.find((search) => search.id === routeSearchId);
+        const searchData = this.savedSearches.data.find(
+          (search) => search.id === routeSearchId
+        );
         if (searchData) {
           this.changeSelectedSearchId(routeSearchId);
           this.applyFilters(JSON.parse(searchData.criteria));
@@ -376,10 +420,10 @@ export default {
           // apply custom filters based on props
           await this.applyFilters({
             reviewStatus: [
-              `${this.showInterested ? 'Interested' : ''}`,
-              `${this.showResult ? 'Applied' : ''}`,
-              `${this.showRejected ? 'Not Applying' : ''}`,
-              `${this.showAssignedToAgency ? 'Assigned' : ''}`,
+              `${this.showInterested ? "Interested" : ""}`,
+              `${this.showResult ? "Applied" : ""}`,
+              `${this.showRejected ? "Not Applying" : ""}`,
+              `${this.showAssignedToAgency ? "Assigned" : ""}`,
             ].filter((r) => r),
           });
         }
@@ -394,7 +438,10 @@ export default {
           assignedToAgency: this.showAssignedToAgency,
         });
         // Clamp currentPage to valid range
-        const clampedPage = Math.max(Math.min(this.currentPage, this.lastPage), 1);
+        const clampedPage = Math.max(
+          Math.min(this.currentPage, this.lastPage),
+          1
+        );
         if (clampedPage !== this.currentPage) {
           this.currentPage = clampedPage;
         }
@@ -428,20 +475,27 @@ export default {
       }
     },
     notifyError() {
-      this.$bvToast.toast('We encountered an error while retrieving grants data. For the most accurate results please refresh the page and try again.', {
-        title: 'Something went wrong',
-        variant: 'danger',
-        solid: true,
-        noAutoHide: true,
-        toaster: 'b-toaster-top-center',
-      });
+      this.$bvToast.toast(
+        "We encountered an error while retrieving grants data. For the most accurate results please refresh the page and try again.",
+        {
+          title: "Something went wrong",
+          variant: "danger",
+          solid: true,
+          noAutoHide: true,
+          toaster: "b-toaster-top-center",
+        }
+      );
     },
     onRowClicked(item) {
       if (!newGrantsDetailPageEnabled()) {
         return;
       }
-      this.$router.push({ name: 'grantDetail', params: { id: item.grant_id } });
-      datadogRum.addAction('view grant details', { grant: item });
+      this.$router.push({
+        name: "grantDetail",
+        params: { id: item.grant_id },
+        query: { fromApp: true },
+      });
+      datadogRum.addAction("view grant details", { grant: item });
     },
     onRowSelected(items) {
       const [row] = items;
@@ -449,7 +503,7 @@ export default {
         const grant = this.grants.find((g) => row.grant_id === g.grant_id);
         this.selectedGrant = grant;
         this.selectedGrantIndex = this.grants.findIndex(
-          (g) => row.grant_id === g.grant_id,
+          (g) => row.grant_id === g.grant_id
         );
       }
     },
@@ -501,15 +555,15 @@ export default {
     },
     formatMoney(value) {
       if (value === undefined || value === null) {
-        return '';
+        return "";
       }
-      const res = Number(value).toLocaleString('en-US', {
+      const res = Number(value).toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-        style: 'currency',
-        currency: 'USD',
+        style: "currency",
+        currency: "USD",
       });
-      return (`${res}`);
+      return `${res}`;
     },
   },
 };
@@ -528,10 +582,10 @@ export default {
   width: 300px;
 }
 .grants-table-title-control {
-  padding-bottom: .75rem;
+  padding-bottom: 0.75rem;
 }
 .grants-table-pagination {
-  padding-bottom: .75rem;
+  padding-bottom: 0.75rem;
 }
 .grants-table-pagination-component {
   display: flex;

@@ -1,35 +1,39 @@
-import VueRouter from 'vue-router';
+import VueRouter from "vue-router";
 
-import { myProfileEnabled, newTerminologyEnabled, newGrantsDetailPageEnabled } from '@/helpers/featureFlags';
-import Login from '../views/Login.vue';
-import Layout from '../components/Layout.vue';
-import ArpaAnnualPerformanceReporter from '../views/ArpaAnnualPerformanceReporter.vue';
+import {
+  myProfileEnabled,
+  newTerminologyEnabled,
+  newGrantsDetailPageEnabled,
+} from "@/helpers/featureFlags";
+import Login from "../views/Login.vue";
+import Layout from "../components/Layout.vue";
+import ArpaAnnualPerformanceReporter from "../views/ArpaAnnualPerformanceReporter.vue";
 
-import store from '../store';
+import store from "../store";
 
 export const routes = [
   {
-    path: '/login',
-    name: 'login',
+    path: "/login",
+    name: "login",
     component: Login,
   },
   {
-    path: '/arpa-annual-performance-reporter',
-    name: 'annualReporter',
+    path: "/arpa-annual-performance-reporter",
+    name: "annualReporter",
     component: ArpaAnnualPerformanceReporter,
     meta: {
       requiresAuth: true,
     },
   },
   {
-    path: '/',
-    name: 'layout',
+    path: "/",
+    name: "layout",
     redirect: (to) => {
-      if (to.fullPath.startsWith('/#/')) {
+      if (to.fullPath.startsWith("/#/")) {
         // Redirect any old hash-style URLs to the new history API URL.
-        return { path: to.hash.substring(1), hash: '' };
+        return { path: to.hash.substring(1), hash: "" };
       }
-      return { name: 'grants' };
+      return { name: "grants" };
     },
     component: Layout,
     meta: {
@@ -37,41 +41,41 @@ export const routes = [
     },
     children: [
       {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: () => import('../views/Dashboard.vue'),
+        path: "/dashboard",
+        name: "dashboard",
+        component: () => import("../views/Dashboard.vue"),
         meta: {
           requiresAuth: true,
         },
       },
       {
-        path: '/RecentActivity',
-        name: 'RecentActivity',
-        component: () => import('../views/RecentActivity.vue'),
+        path: "/RecentActivity",
+        name: "RecentActivity",
+        component: () => import("../views/RecentActivity.vue"),
         meta: {
           requiresAuth: true,
         },
       },
       {
-        path: '/UpcomingClosingDates',
-        name: 'UpcomingClosingDates',
-        component: () => import('../views/UpcomingClosingDates.vue'),
+        path: "/UpcomingClosingDates",
+        name: "UpcomingClosingDates",
+        component: () => import("../views/UpcomingClosingDates.vue"),
         meta: {
           requiresAuth: true,
         },
       },
       {
-        path: '/grants',
-        name: 'grants',
-        component: () => import('../views/Grants.vue'),
+        path: "/grants",
+        name: "grants",
+        component: () => import("../views/Grants.vue"),
         meta: {
           requiresAuth: true,
         },
       },
       {
-        path: '/grant/:id',
-        name: 'grantDetail',
-        component: () => import('../views/GrantDetails.vue'),
+        path: "/grant/:id",
+        name: "grantDetail",
+        component: () => import("../views/GrantDetails.vue"),
         meta: {
           hideLayoutTabs: true,
           requiresAuth: true,
@@ -79,73 +83,73 @@ export const routes = [
         },
       },
       {
-        path: '/my-grants',
-        redirect: '/my-grants/interested',
+        path: "/my-grants",
+        redirect: "/my-grants/interested",
       },
       {
-        path: '/my-grants/:tab',
-        name: 'myGrants',
-        component: () => import('../views/MyGrants.vue'),
+        path: "/my-grants/:tab",
+        name: "myGrants",
+        component: () => import("../views/MyGrants.vue"),
         meta: {
-          tabNames: ['interested', 'assigned', 'not-applying', 'applied'],
+          tabNames: ["interested", "assigned", "not-applying", "applied"],
           requiresAuth: true,
         },
         beforeEnter: (to, _, next) => {
           if (to.meta.tabNames.includes(to.params.tab)) {
             next();
           } else {
-            next('/404');
+            next("/404");
           }
         },
       },
       {
-        path: '/tenants',
-        name: 'tenants',
-        redirect: newTerminologyEnabled() ? '/organizations' : undefined,
-        component: () => import('../views/Organizations.vue'),
+        path: "/tenants",
+        name: "tenants",
+        redirect: newTerminologyEnabled() ? "/organizations" : undefined,
+        component: () => import("../views/Organizations.vue"),
         meta: {
           requiresAuth: true,
         },
       },
       {
-        path: '/organizations',
-        name: 'organizations',
-        component: () => import('../views/Organizations.vue'),
-        meta: {
-          requiresAuth: true,
-          requiresNewTerminologyEnabled: true,
-        },
-      },
-      {
-        path: '/users',
-        name: 'users',
-        component: () => import('../views/Users.vue'),
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        path: '/agencies',
-        name: 'agencies',
-        redirect: newTerminologyEnabled() ? '/teams' : undefined,
-        component: () => import('../views/Teams.vue'),
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        path: '/teams',
-        name: 'teams',
-        component: () => import('../views/Teams.vue'),
+        path: "/organizations",
+        name: "organizations",
+        component: () => import("../views/Organizations.vue"),
         meta: {
           requiresAuth: true,
           requiresNewTerminologyEnabled: true,
         },
       },
       {
-        path: '/my-profile',
-        name: 'myProfile',
-        component: () => import('../views/MyProfile.vue'),
+        path: "/users",
+        name: "users",
+        component: () => import("../views/Users.vue"),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/agencies",
+        name: "agencies",
+        redirect: newTerminologyEnabled() ? "/teams" : undefined,
+        component: () => import("../views/Teams.vue"),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/teams",
+        name: "teams",
+        component: () => import("../views/Teams.vue"),
+        meta: {
+          requiresAuth: true,
+          requiresNewTerminologyEnabled: true,
+        },
+      },
+      {
+        path: "/my-profile",
+        name: "myProfile",
+        component: () => import("../views/MyProfile.vue"),
         meta: {
           requiresAuth: true,
           requiresMyProfileEnabled: true,
@@ -155,9 +159,9 @@ export const routes = [
     ],
   },
   {
-    path: '*',
-    component: () => import('../views/NotFound.vue'),
-    name: 'notFound',
+    path: "*",
+    component: () => import("../views/NotFound.vue"),
+    name: "notFound",
     meta: {
       requiresAuth: true,
     },
@@ -166,12 +170,12 @@ export const routes = [
 
 const router = new VueRouter({
   base: process.env.BASE_URL,
-  mode: 'history',
+  mode: "history",
   routes,
 });
 
 function loggedIn() {
-  const loggedInUser = store.getters['users/loggedInUser'];
+  const loggedInUser = store.getters["users/loggedInUser"];
   return loggedInUser != null;
 }
 
@@ -181,18 +185,19 @@ router.beforeEach((to, from, next) => {
     // This will include any router base URL, if configured
     const redirectTo = router.resolve(to.fullPath).href;
 
-    next({ name: 'login', query: { redirect_to: redirectTo } });
-  } else if (to.name === 'login' && authenticated) {
-    next({ name: 'grants' });
+    next({ name: "login", query: { redirect_to: redirectTo } });
+  } else if (to.name === "login" && authenticated) {
+    next({ name: "grants" });
   } else if (
-    (to.meta.requiresMyProfileEnabled && !myProfileEnabled())
-    || (to.meta.requiresNewTerminologyEnabled && !newTerminologyEnabled())
-    || (to.meta.requiresNewGrantsDetailPageEnabled && !newGrantsDetailPageEnabled())
+    (to.meta.requiresMyProfileEnabled && !myProfileEnabled()) ||
+    (to.meta.requiresNewTerminologyEnabled && !newTerminologyEnabled()) ||
+    (to.meta.requiresNewGrantsDetailPageEnabled &&
+      !newGrantsDetailPageEnabled())
   ) {
     if (authenticated) {
-      next({ name: 'grants' });
+      next({ name: "grants" });
     } else {
-      next({ name: 'login' });
+      next({ name: "login" });
     }
   } else {
     next();
